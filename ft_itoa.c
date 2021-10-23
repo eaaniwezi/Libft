@@ -1,36 +1,33 @@
-
 #include "libft.h"
 
-static int		ft_numlen(int n, int minus)
+static void	ft_putnbr_stock(long n, char *str, int *i)
 {
-	int numlen;
-
-	numlen = 1;
-	while ((n /= 10))
-		numlen++;
-	return (numlen + minus);
+	if (n > 9)
+	{
+		ft_putnbr_stock(n / 10, str, i);
+		ft_putnbr_stock(n % 10, str, i);
+	}
+	else
+		str[(*i)++] = n + '0';
 }
 
-char			*ft_itoa(int n)
+char	*ft_itoa(int n)
 {
 	char	*str;
-	int		numlen;
-	int		minus;
-	int		digit;
+	int		i;
+	long	nbr;
 
-	minus = (n < 0) ? 1 : 0;
-	numlen = ft_numlen(n, minus);
-	if ((str = ft_strnew(numlen)))
+	nbr = n;
+	str = malloc(sizeof(char) * (ft_nbrlen(nbr) + 1));
+	if (str == NULL)
+		return (NULL);
+	i = 0;
+	if (nbr < 0)
 	{
-		str[numlen--] = '\0';
-		while (numlen >= minus)
-		{
-			digit = n % 10;
-			str[numlen--] = FT_ABS(digit) + '0';
-			n /= 10;
-		}
-		if (minus)
-			str[0] = '-';
+		str[i++] = '-';
+		nbr *= -1;
 	}
+	ft_putnbr_stock(nbr, str, &i);
+	str[i] = '\0';
 	return (str);
 }
